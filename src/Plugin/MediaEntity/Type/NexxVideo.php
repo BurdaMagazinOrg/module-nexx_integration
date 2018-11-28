@@ -218,8 +218,8 @@ class NexxVideo extends MediaTypeBase {
     $teaser_field = $this->configuration['teaser_image_field'];
 
     // If a teaser file mapping is given, use this as thumbnail.
-    if (!empty($teaser_field) && !empty($media->{$teaser_field})) {
-      $teaser_image = $media->{$teaser_field}->first()->entity;
+    if (!empty($teaser_field) && $media->hasField($teaser_field) && ($teaser_image = $media->get($teaser_field)->referencedEntities())) {
+      $teaser_image = reset($teaser_image);
 
       $source_field = $this->entityTypeManager->getStorage('media_bundle')
         ->load($teaser_image->bundle())
