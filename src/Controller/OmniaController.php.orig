@@ -418,13 +418,7 @@ class OmniaController extends ControllerBase {
     $entityType = $this->entityTypeManager()->getDefinition('media');
     $videoField = $this->videoFieldName();
 
-    // Prepare nexxVideoData from JSON send by NEXX and
-    // try to get existing thumbnail URL from existing video
-    // to fix re-adding thumb media image on every update push.
     $this->prepareData();
-    if (!$media->$videoField->isEmpty()) {
-      $this->nexxVideoData['thumb'] = $media->$videoField->thumb;
-    }
     $media->set($videoField, $this->nexxVideoData);
 
     $actor_ids = explode(',', $this->nexxVideoData['actors_ids']);
