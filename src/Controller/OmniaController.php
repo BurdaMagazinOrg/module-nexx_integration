@@ -8,7 +8,6 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Utility\Token;
 use Drupal\media\MediaInterface;
-use Drupal\media\Entity\Media;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -496,7 +495,7 @@ class OmniaController extends ControllerBase {
     }
 
     // Media entity does not update mapped fields by itself.
-    foreach ($media->bundle->entity->getFieldMap() as $source_field => $destination_field) {
+    foreach ($media->bundle->entity->getFieldMap() as $destination_field) {
       if ($media->hasField($destination_field) && ($value = $media->getSource()->getSourceFieldValue($media))) {
         $media->set($destination_field, $value);
       }
