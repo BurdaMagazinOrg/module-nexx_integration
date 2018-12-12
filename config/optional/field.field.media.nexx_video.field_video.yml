@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - field.storage.media.field_video
-    - media_entity.bundle.nexx_video
+    - media.type.nexx_video
   module:
     - nexx_integration
 id: media.nexx_video.field_video

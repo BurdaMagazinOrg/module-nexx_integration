@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\media_entity\Entity\Media;
 
 /**
  * Implements hook_library_info_build().
@@ -126,10 +125,11 @@ function nexx_integration_taxonomy_term_request(EntityInterface $term, $command,
    */
   foreach ($container->get('entity_type.bundle.info')
     ->getBundleInfo('media') as $bundle_id => $bundle_info) {
-    $bundle = $entity_type_manager->getStorage('media_bundle')
+    /** @var \Drupal\media\MediaTypeInterface $bundle */
+    $bundle = $entity_type_manager->getStorage('media_type')
       ->load($bundle_id);
-    if ($bundle->getType()->getPluginId() === 'nexx_video') {
-      $configuration = $bundle->getType()->getConfiguration();
+    if ($bundle->getSource()->getPluginId() === 'nexx_video') {
+      $configuration = $bundle->getSource()->getConfiguration();
 
       $field_definitions = $container->get('entity_field.manager')
         ->getFieldDefinitions('media', $bundle_id);
@@ -269,11 +269,11 @@ function nexx_integration_cron() {
   $ids = $storage->getQuery()
     ->condition($video_field . '.validfrom_ssc', REQUEST_TIME, '<=')
     ->condition($video_field . '.validto_ssc', REQUEST_TIME, '>')
-    ->condition("status", Media::NOT_PUBLISHED)
+    ->condition("status", FALSE)
     ->execute();
 
   foreach ($storage->loadMultiple($ids) as $video) {
-    $video->set("status", Media::PUBLISHED);
+    $video->set("status", TRUE);
     $video->save();
     $logger->info("Published nexx video \"@videoname\" (id: @id)", [
       '@videoname' => $video->label(),
@@ -286,12 +286,12 @@ function nexx_integration_cron() {
   $ids = $storage->getQuery()
     ->condition($video_field . '.validto_ssc', 0, '<>')
     ->condition($video_field . '.validto_ssc', REQUEST_TIME, '<=')
-    ->condition("status", Media::PUBLISHED)
+    ->condition("status", TRUE)
     ->execute();
 
   foreach ($storage->loadMultiple($ids) as $video) {
-    /** @var \Drupal\media_entity\MediaInterface $video */
-    $video->set("status", Media::NOT_PUBLISHED);
+    /** @var \Drupal\media\MediaInterface $video */
+    $video->set("status", FALSE);
     $video->save();
     $logger->info("Unpublished nexx video \"@videoname\" (id: @id)", [
       '@videoname' => $video->label(),

@@ -6,6 +6,6 @@ core: 8.x
 configure: nexx_integration.admin_settings
 
 dependencies:
-  - media_entity:media_entity
+  - drupal:media
   - token:token
   - drupal:field

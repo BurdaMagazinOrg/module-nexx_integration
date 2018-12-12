@@ -7,8 +7,8 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Utility\Token;
-use Drupal\media_entity\MediaInterface;
-use Drupal\media_entity\Entity\Media;
+use Drupal\media\MediaInterface;
+use Drupal\media\Entity\Media;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +39,7 @@ class OmniaController extends ControllerBase {
   /**
    * The media entity.
    *
-   * @var \Drupal\media_entity\MediaInterface
+   * @var \Drupal\media\MediaInterface
    */
   protected $mediaEntity;
 
@@ -411,7 +411,7 @@ class OmniaController extends ControllerBase {
   /**
    * Map incoming nexx video data to media entity fields.
    *
-   * @param \Drupal\media_entity\MediaInterface $media
+   * @param \Drupal\media\MediaInterface $media
    *   Media entity.
    */
   protected function mapData(MediaInterface $media) {
@@ -428,7 +428,7 @@ class OmniaController extends ControllerBase {
     $labelKey = $entityType->getKey('label');
     $media->$labelKey = $this->nexxVideoData['title'];
 
-    $media_config = $media->getType()->getConfiguration();
+    $media_config = $media->getSource()->getConfiguration();
 
     $fields = [
       'description_field' => NULL,
@@ -496,8 +496,8 @@ class OmniaController extends ControllerBase {
     }
 
     // Media entity does not update mapped fields by itself.
-    foreach ($media->bundle->entity->field_map as $source_field => $destination_field) {
-      if ($media->hasField($destination_field) && ($value = $media->getType()->getField($media, $source_field))) {
+    foreach ($media->bundle->entity->getFieldMap() as $source_field => $destination_field) {
+      if ($media->hasField($destination_field) && ($value = $media->getSource()->getSourceFieldValue($media))) {
         $media->set($destination_field, $value);
       }
     }
@@ -506,7 +506,7 @@ class OmniaController extends ControllerBase {
   /**
    * Map incoming teaser image to medie entity field.
    *
-   * @param \Drupal\media_entity\MediaInterface $media
+   * @param \Drupal\media\MediaInterface $media
    *   The media entity.
    * @param mixed $teaserImageField
    *   The machine name of the field, that stores the file.
@@ -638,17 +638,17 @@ class OmniaController extends ControllerBase {
   /**
    * Set proper publish state to media entity.
    *
-   * @param \Drupal\media_entity\MediaInterface $media
+   * @param \Drupal\media\MediaInterface $media
    *   Media entity.
    */
   protected function setState(MediaInterface $media) {
 
-    $status = Media::NOT_PUBLISHED;
+    $status = FALSE;
 
     if ($this->nexxVideoData['active'] == 1
       && $this->nexxVideoData['isSSC'] == 1
     ) {
-      $status = Media::PUBLISHED;
+      $status = TRUE;
 
       $this->logger->info('Published video "@title" (Drupal id: @id)',
         [

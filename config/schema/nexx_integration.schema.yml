@@ -18,8 +18,8 @@ nexx_integration.settings:
       type: string
       label:  'NEXX notification access key.'
 
-media_entity.bundle.type.nexx_video:
-  type: mapping
+media.source.nexx_video:
+  type: media.source.field_aware
   label: 'Nexx video configuration'
   mapping:
     channel_field:

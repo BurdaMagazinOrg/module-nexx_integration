@@ -207,7 +207,7 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
     $videoEntity = $this->loadVideoEntity($videoData->value);
 
     // Make sure this is active.
-    $this->assertEquals(1, $videoEntity->get("status")->getString(), "Video
+    $this->assertEquals(1, $videoEntity->isPublished(), "Video
     $id should be created with status=1.");
 
     // Set expire date in the past and run cron.
@@ -216,7 +216,7 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
 
     $this->cron->run();
     $videoEntity = $this->loadVideoEntity($videoData->value);
-    $this->assertEquals(0, $videoEntity->get("status")->getString(), "Video
+    $this->assertEquals(0, $videoEntity->isPublished(), "Video
     $id should be set to status=0 after cron run with expire date in the past.");
 
     // Set expire date to the future, the activation date in the past
@@ -226,8 +226,9 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
     $videoEntity->save();
 
     $this->cron->run();
+    /** @var \Drupal\media\MediaInterface $videoEntity */
     $videoEntity = $this->loadVideoEntity($videoData->value);
-    $this->assertEquals(1, $videoEntity->get("status")->getString(), "Video
+    $this->assertEquals(1, $videoEntity->isPublished(), "Video
     $id should be set to status=1 after cron run with activation date in the past.");
   }
 

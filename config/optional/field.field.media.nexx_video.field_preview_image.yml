@@ -3,8 +3,8 @@ status: true
 dependencies:
   config:
     - field.storage.media.field_preview_image
-    - media_entity.bundle.image
-    - media_entity.bundle.nexx_video
+    - media.type.image
+    - media.type.nexx_video
 id: media.nexx_video.field_preview_image
 field_name: field_preview_image
 entity_type: media

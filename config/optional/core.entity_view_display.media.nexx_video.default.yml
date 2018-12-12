@@ -4,7 +4,7 @@ dependencies:
   config:
     - field.field.media.nexx_video.field_preview_image
     - field.field.media.nexx_video.field_video
-    - media_entity.bundle.nexx_video
+    - media.type.nexx_video
   module:
     - nexx_integration
 id: media.nexx_video.default

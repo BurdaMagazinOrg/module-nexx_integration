@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_video
-    - media_entity.bundle.nexx_video
+    - media.type.nexx_video
     - paragraphs.paragraphs_type.nexx_video
 id: paragraph.nexx_video.field_video
 field_name: field_video

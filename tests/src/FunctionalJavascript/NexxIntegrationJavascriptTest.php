@@ -32,7 +32,7 @@ class NexxIntegrationJavascriptTest extends WebDriverTestBase {
 
     $videoEditPage = 'media/' . $videoData->value . '/edit';
     $this->drupalGet($videoEditPage);
-    $this->getSession()->getPage()->pressButton('Save and keep published');
+    $this->getSession()->getPage()->pressButton('Save');
 
     $videoEntity = $this->loadVideoEntity($videoData->value);
     $videoFieldName = $this->videoManager->videoFieldName();

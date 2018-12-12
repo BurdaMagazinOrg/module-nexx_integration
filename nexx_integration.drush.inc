@@ -5,8 +5,7 @@
  * Drush commands for the nexx_integration module.
  */
 
-use Drupal\media_entity\MediaStorageInterface;
-use Drupal\media_entity\Entity\Media;
+use Drupal\Core\Entity\ContentEntityStorageBase;
 
 /**
  * Implements hook_drush_commands().
@@ -96,7 +95,7 @@ function drush_nexx_integration_nexx_perform_unpublish_delete($per_batch = 20) {
 
   $ids = $query
     ->condition($group)
-    ->condition("status", Media::PUBLISHED)
+    ->condition("status", TRUE)
     ->execute();
 
   $chunks = array_chunk(array_values($ids), $per_batch);
@@ -134,15 +133,15 @@ function drush_nexx_integration_nexx_perform_unpublish_delete($per_batch = 20) {
  *
  * @param array $ids
  *   List of video ids.
- * @param Drupal\media_entity\MediaStorageInterface $storage
+ * @param Drupal\Core\Entity\ContentEntityStorageBase $storage
  *   Media storage service.
  * @param string $video_field
  *   Video field name.
  * @param object $sandbox
  *   Sandbox array.
  */
-function _nexx_integration_drush_batch_op(array $ids, MediaStorageInterface $storage, $video_field, &$sandbox) {
-  /** @var \Drupal\media_entity\MediaInterface $video */
+function _nexx_integration_drush_batch_op(array $ids, ContentEntityStorageBase $storage, $video_field, &$sandbox) {
+  /** @var \Drupal\media\MediaInterface $video */
   foreach ($storage->loadMultiple($ids) as $video) {
     /** @var \Drupal\Core\Field\FieldItemInterface $video_data */
     $video_data = $video->get($video_field)->first();
@@ -154,7 +153,7 @@ function _nexx_integration_drush_batch_op(array $ids, MediaStorageInterface $sto
     elseif ($video_data->get("active")->getString() == 0
       || $video_data->get("isSSC")->getString() == 0
     ) {
-      $video->set("status", Media::NOT_PUBLISHED);
+      $video->set("status", FALSE);
       $video->save();
       drush_log(dt('Unpublishing video ' . $video->id()), "ok");
     }
