@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\nexx_integration\FunctionalJavascript;
 
-use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Url;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\taxonomy\Entity\Term;
@@ -295,15 +294,6 @@ trait NexxTestTrait {
     $page->fillField('edit-omnia-id', '1');
     $page->fillField('edit-notification-access-key', 'test-access-key');
     $page->pressButton('edit-submit');
-
-    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display */
-    $form_display = EntityFormDisplay::create([
-      'targetEntityType' => 'media',
-      'bundle' => 'nexx_video',
-      'mode' => 'default',
-    ]);
-    $form_display->save();
-    $form_display->setComponent('field_video', [])->enable()->save();
   }
 
   /**

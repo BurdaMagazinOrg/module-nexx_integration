@@ -530,6 +530,7 @@ class OmniaController extends ControllerBase {
     $storage = $this->entityTypeManager()
       ->getStorage($images_field_target_type);
 
+    /** @var \Drupal\media\MediaInterface $thumbnail_entity */
     $thumbnail_entity = $storage->create([
       'bundle' => $images_field_target_bundle,
       'name' => $media->label(),
@@ -547,11 +548,10 @@ class OmniaController extends ControllerBase {
       }
 
       // Get configured source field from media entity type definition.
-      $thumbnail_upload_field = $thumbnail_entity->getType()
-        ->getConfiguration()['source_field'];
+      $thumbnail_upload_field_definition = $thumbnail_entity->getSource()->getSourceFieldDefinition($thumbnail_entity->bundle->entity);
+      $thumbnail_upload_field = $thumbnail_upload_field_definition->getName();
       // Get field settings from this field.
-      $thumbnail_upload_field_settings = $thumbnail_entity->getFieldDefinition($thumbnail_upload_field)
-        ->getSettings();
+      $thumbnail_upload_field_settings = $thumbnail_upload_field_definition->getSettings();
       // Use file directory and uri_scheme out of these settings to create
       // destination directory for file upload.
       $upload_directory = $this->token->replace($thumbnail_upload_field_settings['file_directory']);

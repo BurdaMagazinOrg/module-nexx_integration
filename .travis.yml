@@ -1,5 +1,8 @@
 language: php
-sudo: required
+dist: xenial
+
+services:
+  - mysql
 
 cache:
   apt: true
@@ -10,7 +13,6 @@ cache:
 
 php:
   - 7.2
-  - 5.6
 
 branches:
   only:
@@ -21,7 +23,7 @@ env:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 
 before_install:
-  - composer global require thunder/travis @beta
+  - composer global require thunder/travis
 
 script:
   - test-drupal-module

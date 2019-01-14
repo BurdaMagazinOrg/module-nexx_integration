@@ -16,6 +16,7 @@ class NexxIntegrationJavascriptTest extends WebDriverTestBase {
   public static $modules = [
     'taxonomy',
     'nexx_integration',
+    'nexx_integration_test',
     'field_ui',
     'field',
   ];
