@@ -258,6 +258,23 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
   }
 
   /**
+   * Test existing preview image not re-created on update.
+   */
+  public function testPreviewImageOnUpdate() {
+    $id = 11;
+
+    $data = $this->getTestVideoData($id);
+    $videoData = $this->postVideoData($data);
+
+    $videoEntity = $this->loadVideoEntity($videoData->value);
+    $preview_image_id = $videoEntity->get('field_preview_image')->target_id;
+
+    // Posting the same request again should not change the preview image.
+    $videoData = $this->postVideoData($data);
+    $this->assertEquals($preview_image_id, $this->loadVideoEntity($videoData->value)->get('field_preview_image')->target_id, 'Preview image stay the same after resubmitting request.');
+  }
+
+  /**
    * Test the created video entity.
    */
   public function testMappedFields() {
