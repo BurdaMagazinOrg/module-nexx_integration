@@ -372,15 +372,19 @@ class OmniaController extends ControllerBase {
    * Prepare data from Nexx APi call.
    */
   protected function prepareData() {
+    $teaser = substr($this->videoData->itemData->general->teaser, 0, 256);
+    $description = substr($this->videoData->itemData->general->description, 0, 256);
+    $altdescription = substr($this->videoData->itemData->general->altdescription, 0, 256);
+
     return $this->nexxVideoData = [
       'item_id' => $this->getVideoId(),
       'title' => !empty($this->videoData->itemData->general->title) ? (string) $this->videoData->itemData->general->title : '',
       'hash' => !empty($this->videoData->itemData->general->hash) ? (string) $this->videoData->itemData->general->hash : '',
       'alttitle' => !empty($this->videoData->itemData->general->alttitle) ? (string) $this->videoData->itemData->general->alttitle : '',
       'subtitle' => !empty($this->videoData->itemData->general->subtitle) ? (string) $this->videoData->itemData->general->subtitle : '',
-      'teaser' => !empty($this->videoData->itemData->general->teaser) ? (string) $this->videoData->itemData->general->teaser : '',
-      'description' => substr(!empty($this->videoData->itemData->general->description) ? $this->videoData->itemData->general->description : '', 0, 256),
-      'altdescription' => substr(!empty($this->videoData->itemData->general->altdescription) ? $this->videoData->itemData->general->altdescription : '', 0, 256),
+      'teaser' => !empty($teaser) ? $teaser : '',
+      'description' => !empty($description) ? $description : '',
+      'altdescription' => !empty($altdescription) ? $altdescription : '',
       'copyright' => !empty($this->videoData->itemData->general->copyright) ? (string) $this->videoData->itemData->general->copyright : '',
       'actors_ids' => !empty($this->videoData->itemData->general->persons_raw) ? (string) $this->videoData->itemData->general->persons_raw : '',
       'tags_ids' => !empty($this->videoData->itemData->general->tags_raw) ? (string) $this->videoData->itemData->general->tags_raw : '',
