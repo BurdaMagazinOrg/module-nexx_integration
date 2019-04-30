@@ -157,7 +157,7 @@ trait NexxTestTrait {
     $itemData->imagedata->thumb = "http://nx-i.akamaized.net/201605/G750452J1M6XAOWxL.jpg";
     $itemData->general->runtime = "00:02:45";
     $itemData->channeldata->ID = $channel;
-    $itemData->general->actors_raw = implode(',', $actors);
+    $itemData->general->persons_raw = implode(',', $actors);
     $itemData->general->tags_raw = implode(',', $tags);
 
     $itemData->publishingdata->allowedOnDesktop = 1;

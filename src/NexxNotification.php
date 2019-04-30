@@ -154,7 +154,7 @@ class NexxNotification implements NexxNotificationInterface {
     $omnia_id = $this->config->get('omnia_id');
 
     $api_url = $this->config->get('nexx_api_url') . 'v3/' . $omnia_id . '/manage/' . $streamtype . '/';
-    if ($command == 'insert' && $streamtype == 'actors') {
+    if ($command == 'insert' && $streamtype == 'persons') {
       $api_url .= 'fromdata/';
     }
     elseif ($command == 'insert') {

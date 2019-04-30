@@ -164,7 +164,7 @@ function nexx_integration_taxonomy_term_request(EntityInterface $term, $command,
         }
       }
       elseif (isset($actors_field_settings['target_bundles']) && in_array($term_bundle, $actors_field_settings['target_bundles'])) {
-        $streamtype = "actors";
+        $streamtype = "persons";
         $params = ['artistname' => $term->label()] + $additional_params;
       }
       elseif (isset($tags_field_settings['target_bundles']) && in_array($term_bundle, $tags_field_settings['target_bundles'])) {
