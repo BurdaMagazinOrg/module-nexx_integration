@@ -349,13 +349,13 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
     }
 
     // First step: 'Add field' page.
-    $this->drupalPostForm($bundle_path, $initial_edit, t('Save and continue'));
+    $this->drupalPostForm($bundle_path, $initial_edit, $this->t('Save and continue'));
 
     // Second step: 'Storage settings' form.
-    $this->drupalPostForm(NULL, $storage_edit, t('Save field settings'));
+    $this->drupalPostForm(NULL, $storage_edit, $this->t('Save field settings'));
 
     // Third step: 'Field settings' form.
-    $this->drupalPostForm(NULL, $field_edit, t('Save settings'));
+    $this->drupalPostForm(NULL, $field_edit, $this->t('Save settings'));
   }
 
 }
