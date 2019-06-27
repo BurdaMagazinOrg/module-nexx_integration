@@ -178,33 +178,6 @@ class NexxVideo extends MediaTypeBase {
   }
 
   /**
-   * Retrieve video field name.
-   *
-   * @param \Drupal\media_entity\MediaInterface $media
-   *   The media object for which the field should be retrieved.
-   *
-   * @return string
-   *   The fieldname of the video field;
-   *
-   * @throws \Exception
-   */
-  public function getVideoField(MediaInterface $media) {
-    $fieldDefinitions = $media->getFieldDefinitions();
-    foreach ($fieldDefinitions as $field_name => $fieldDefinition) {
-      if ($fieldDefinition->getType() === 'nexx_video_data') {
-        $videoField = $field_name;
-        break;
-      }
-    }
-
-    if (empty($videoField)) {
-      throw new \Exception('No video data field defined');
-    }
-
-    return $videoField;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getDefaultThumbnail() {
