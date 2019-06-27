@@ -123,7 +123,7 @@ trait NexxTestTrait {
    * @param int $videoId
    *   Setup video ID.
    *
-   * @return \stdClass
+   * @return object
    *   Test video data object
    */
   protected function getTestVideoData($videoId) {
@@ -196,7 +196,7 @@ trait NexxTestTrait {
    * @param int $videoId
    *   Setup video ID.
    *
-   * @return \stdClass
+   * @return object
    *   Test video data object
    */
   protected function getTestVideoDeleteData($videoId) {
