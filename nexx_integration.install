@@ -360,3 +360,25 @@ function nexx_integration_update_8008() {
     'not null' => TRUE,
   ]);
 }
+
+/**
+ * Sets the source field.
+ */
+function nexx_integration_update_8009() {
+  $media_bundles = \Drupal::entityTypeManager()->getStorage('media_bundle')->loadMultiple();
+  /** @var \Drupal\media_entity\Entity\MediaBundle $media_bundle */
+  foreach ($media_bundles as $media_bundle) {
+    /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
+    $field_manager = \Drupal::service('entity_field.manager');
+    $field_definitions = $field_manager->getFieldDefinitions('media', $media_bundle->id());
+    foreach ($field_definitions as $field_name => $fieldDefinition) {
+      if ($fieldDefinition->getType() === 'nexx_video_data') {
+        $config = $media_bundle->getTypeConfiguration();
+        $config['source_field'] = $field_name;
+        $media_bundle->setTypeConfiguration($config);
+        $media_bundle->save();
+        break;
+      }
+    }
+  }
+}
