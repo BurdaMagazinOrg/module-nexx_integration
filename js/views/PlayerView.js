@@ -52,7 +52,6 @@
      */
     onIsPausedChange: function () {
 
-      /* global _play */
       // Player is initialized?
       if (this.model.get('playerIsReady')) {
         var id = this.model.get('containerId');

@@ -13,4 +13,5 @@ type_configuration:
   channel_field: ''
   actor_field: ''
   teaser_image_field: field_preview_image
+  source_field: field_video
 field_map: {  }
