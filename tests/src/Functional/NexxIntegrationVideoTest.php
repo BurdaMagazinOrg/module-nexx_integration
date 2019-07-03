@@ -16,6 +16,9 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
   use FieldUiTestTrait;
   use NexxTestTrait;
 
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     'taxonomy',
     'nexx_integration',

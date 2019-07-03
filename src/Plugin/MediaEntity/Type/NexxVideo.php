@@ -101,7 +101,7 @@ class NexxVideo extends MediaTypeBase {
    * {@inheritdoc}
    */
   public function getField(MediaInterface $media, $name) {
-    $video_field = $this->getVideoField($media);
+    $video_field = $this->configuration['source_field'];
 
     if (empty($video_field)) {
       return FALSE;
@@ -178,33 +178,6 @@ class NexxVideo extends MediaTypeBase {
   }
 
   /**
-   * Retrieve video field name.
-   *
-   * @param \Drupal\media_entity\MediaInterface $media
-   *   The media object for which the field should be retrieved.
-   *
-   * @return string
-   *   The fieldname of the video field;
-   *
-   * @throws \Exception
-   */
-  public function getVideoField(MediaInterface $media) {
-    $fieldDefinitions = $media->getFieldDefinitions();
-    foreach ($fieldDefinitions as $field_name => $fieldDefinition) {
-      if ($fieldDefinition->getType() === 'nexx_video_data') {
-        $videoField = $field_name;
-        break;
-      }
-    }
-
-    if (empty($videoField)) {
-      throw new \Exception('No video data field defined');
-    }
-
-    return $videoField;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getDefaultThumbnail() {
@@ -243,8 +216,23 @@ class NexxVideo extends MediaTypeBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    /** @var MediaBundleInterface $bundle */
+    /** @var \Drupal\media_entity\MediaBundleInterface $bundle */
     $bundle = $form_state->getFormObject()->getEntity();
+    $options = [];
+    $allowed_field_types = ['nexx_video_data'];
+    foreach ($this->entityFieldManager->getFieldDefinitions('media', $bundle->id()) as $field_name => $field) {
+      if (in_array($field->getType(), $allowed_field_types) && !$field->getFieldStorageDefinition()->isBaseField()) {
+        $options[$field_name] = $field->getLabel();
+      }
+    }
+
+    $form['source_field'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Field with source information'),
+      '#description' => $this->t('Field on media entity that stores Image file. You can create a bundle without selecting a value for this dropdown initially. This dropdown can be populated after adding fields to the bundle.'),
+      '#default_value' => empty($this->configuration['source_field']) ? NULL : $this->configuration['source_field'],
+      '#options' => $options,
+    ];
 
     $form['description_field'] = [
       '#type' => 'select',

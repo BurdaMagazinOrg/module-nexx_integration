@@ -13,6 +13,9 @@ class NexxIntegrationJavascriptTest extends WebDriverTestBase {
 
   use NexxTestTrait;
 
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     'taxonomy',
     'nexx_integration',
