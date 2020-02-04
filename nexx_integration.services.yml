@@ -1,7 +1,7 @@
 services:
   nexx_integration.notification:
     class: Drupal\nexx_integration\NexxNotification
-    arguments: ['@config.factory', '@logger.factory', '@http_client', '@string_translation']
+    arguments: ['@config.factory', '@logger.factory', '@http_client', '@string_translation', '@messenger']
 
   nexx_integration.videomanager:
     class: Drupal\nexx_integration\VideoManagerService

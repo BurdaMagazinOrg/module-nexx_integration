@@ -4,13 +4,14 @@ namespace Drupal\nexx_integration\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityTypeRepositoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
 
 /**
  * Class SettingsForm.
@@ -21,40 +22,65 @@ use Drupal\Core\Entity\EntityManagerInterface;
  */
 class SettingsForm extends ConfigFormBase {
   /**
-   * The entity manager service.
+   * The entity type manager service.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
-   * The display plugin manager.
+   * The entity type repository service.
    *
-   * @var \Drupal\entity_embed\EntityEmbedDisplay\EntityEmbedDisplayManager
+   * @var \Drupal\Core\Entity\EntityTypeRepositoryInterface
    */
-  protected $displayPluginManager;
+  protected $entityTypeRepository;
 
   /**
-   * {@inheritdoc}
+   * The entity type bundle info service.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager service.
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityManagerInterface $entity_manager) {
-    parent::__construct($config_factory);
-    $this->entityManager = $entity_manager;
-  }
+  protected $entityTypeBundleInfo;
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('config.factory'),
-      $container->get('entity.manager')
-    );
+    $form = parent::create($container);
+    $form->setEntityTypeManager($container->get('entity_type.manager'));
+    $form->setEntityTypeRepository($container->get('entity_type.repository'));
+    $form->setEntityTypeBundleInfo($container->get('entity_type.bundle.info'));
+    return $form;
+  }
+
+  /**
+   * Set the entity type manager service.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
+   */
+  protected function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
+  }
+
+  /**
+   * Set the entity type repository service.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeRepositoryInterface $entityTypeRepository
+   *   The entity type repository service.
+   */
+  protected function setEntityTypeRepository(EntityTypeRepositoryInterface $entityTypeRepository) {
+    $this->entityTypeRepository = $entityTypeRepository;
+  }
+
+  /**
+   * Set the entity type bundle info service.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entityTypeBundleInfo
+   *   The entity type bundle info service.
+   */
+  protected function setEntityTypeBundleInfo(EntityTypeBundleInfoInterface $entityTypeBundleInfo) {
+    $this->entityTypeBundleInfo = $entityTypeBundleInfo;
   }
 
   /**
@@ -132,7 +158,7 @@ class SettingsForm extends ConfigFormBase {
       '#suffix' => '</div>',
     ];
 
-    $entity_type = $this->entityManager->getDefinition('media');
+    $entity_type = $this->entityTypeManager->getDefinition('media');
     $bundle = !empty($values['type_settings']['video_bundle']) ? $values['type_settings']['video_bundle'] : $settings->get('video_bundle');
     $form['type_settings']['video_bundle'] = [
       '#type' => 'select',
@@ -218,12 +244,12 @@ class SettingsForm extends ConfigFormBase {
    *   An array of entity type labels, keyed by entity type name.
    */
   protected function getEntityTypeOptions() {
-    $options = $this->entityManager->getEntityTypeLabels(TRUE);
+    $options = $this->entityTypeRepository->getEntityTypeLabels(TRUE);
 
     foreach ($options as $group => $group_types) {
       foreach (array_keys($group_types) as $entity_type_id) {
         // Filter out entity types that do not have a view builder class.
-        if (!$this->entityManager->getDefinition($entity_type_id)->hasViewBuilderClass()) {
+        if (!$this->entityTypeManager->getDefinition($entity_type_id)->hasViewBuilderClass()) {
           unset($options[$group][$entity_type_id]);
         }
       }
@@ -268,7 +294,7 @@ class SettingsForm extends ConfigFormBase {
     $bundle_options = [];
     // If the entity has bundles, allow option to restrict to bundle(s).
     if ($entity_type->hasKey('bundle')) {
-      foreach ($this->entityManager->getBundleInfo($entity_type->id()) as $bundle_id => $bundle_info) {
+      foreach ($this->entityTypeBundleInfo->getBundleInfo($entity_type->id()) as $bundle_id => $bundle_info) {
         $bundle_options[$bundle_id] = $bundle_info['label'];
       }
       natsort($bundle_options);

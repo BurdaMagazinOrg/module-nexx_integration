@@ -154,7 +154,7 @@ trait NexxTestTrait {
     $itemData->general->uploaded = 1463997938;
     $itemData->general->copyright = "Copyright notice";
     $itemData->publishingdata->isEncoded = "1";
-    $itemData->imagedata->thumb = "http://nx-i.akamaized.net/201605/G750452J1M6XAOWxL.jpg";
+    $itemData->imagedata->thumb = "https://via.placeholder.com/300.jpg";
     $itemData->general->runtime = "00:02:45";
     $itemData->channeldata->ID = $channel;
     $itemData->general->persons_raw = implode(',', $actors);

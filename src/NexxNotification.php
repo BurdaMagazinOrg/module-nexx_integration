@@ -5,6 +5,7 @@ namespace Drupal\nexx_integration;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Messenger\MessengerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Drupal\Core\StringTranslation\TranslationInterface;
@@ -41,6 +42,13 @@ class NexxNotification implements NexxNotificationInterface {
   protected $httpClient;
 
   /**
+   * The messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * Notify nexxOMNIA video CMS.
    *
    * Notify when channel or actor terms have been updated,
@@ -54,17 +62,21 @@ class NexxNotification implements NexxNotificationInterface {
    *   The HTTP client.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $translation
    *   The translation service.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger service.
    */
   public function __construct(
     ConfigFactoryInterface $config_factory,
     LoggerChannelFactoryInterface $logger_factory,
     Client $http_client,
-    TranslationInterface $translation
+    TranslationInterface $translation,
+    MessengerInterface $messenger
   ) {
     $this->config = $config_factory->get('nexx_integration.settings');
     $this->logger = $logger_factory->get('nexx_integration');
     $this->httpClient = $http_client;
     $this->stringTranslation = $translation;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -169,7 +181,7 @@ class NexxNotification implements NexxNotificationInterface {
 
     if ($api_url == '' || $api_authkey == '' || $omnia_id == '') {
       $this->logger->error("Missing configuration for API Url and/or Installation Code (API Key) and/or Omnia ID.");
-      drupal_set_message($this->t("Item wasn't exported to Nexx due to missing configuration for API Url and/or Installation Code (API Key) and/or Omnia ID."), 'error');
+      $this->messenger->addError($this->t("Item wasn't exported to Nexx due to missing configuration for API Url and/or Installation Code (API Key) and/or Omnia ID."));
 
       return FALSE;
     }

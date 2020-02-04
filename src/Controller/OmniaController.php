@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Utility\Token;
 use Drupal\media\MediaInterface;
 use Psr\Log\LoggerInterface;
@@ -34,27 +35,6 @@ class OmniaController extends ControllerBase {
    * @var \Drupal\Core\Entity\EntityTypeBundleInfo
    */
   protected $entityTypeBundleInfo;
-
-  /**
-   * The media entity.
-   *
-   * @var \Drupal\media\MediaInterface
-   */
-  protected $mediaEntity;
-
-  /**
-   * The media entity storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected $mediaEntityStorage;
-
-  /**
-   * The media entity definition.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeInterface
-   */
-  protected $mediaEntityDefinition;
 
   /**
    * The entity field manager.
@@ -92,6 +72,13 @@ class OmniaController extends ControllerBase {
   protected $nexxVideoData = [];
 
   /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * OmniaController constructor.
    *
    * @param \Drupal\Core\Database\Connection $database
@@ -104,6 +91,8 @@ class OmniaController extends ControllerBase {
    *   The logger service.
    * @param \Drupal\Core\Utility\Token $token
    *   Token service.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file system service.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException.
    */
@@ -112,13 +101,15 @@ class OmniaController extends ControllerBase {
     EntityTypeBundleInfoInterface $entity_type_bundle_info,
     EntityFieldManagerInterface $entity_field_manager,
     LoggerInterface $logger,
-    Token $token
+    Token $token,
+    FileSystemInterface $file_system
   ) {
     $this->database = $database;
     $this->entityTypeBundleInfo = $entity_type_bundle_info;
     $this->entityFieldManager = $entity_field_manager;
     $this->logger = $logger;
     $this->token = $token;
+    $this->fileSystem = $file_system;
   }
 
   /**
@@ -130,7 +121,8 @@ class OmniaController extends ControllerBase {
       $container->get('entity_type.bundle.info'),
       $container->get('entity_field.manager'),
       $container->get('logger.factory')->get('nexx_integration'),
-      $container->get('token')
+      $container->get('token'),
+      $container->get('file_system')
     );
   }
 
@@ -569,8 +561,8 @@ class OmniaController extends ControllerBase {
       $destination_directory = dirname($destination_file);
       if ($destination_directory) {
         // Import file.
-        file_prepare_directory($destination_directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-        $thumbnail = file_save_data(file_get_contents($thumb_uri), $destination_file, FILE_EXISTS_REPLACE);
+        $this->fileSystem->prepareDirectory($destination_directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+        $thumbnail = file_save_data(file_get_contents($thumb_uri), $destination_file, FileSystemInterface::EXISTS_REPLACE);
         // Add this file to thumbnail field of the nexx media entity.
         $thumbnail_entity->$thumbnail_upload_field->appendItem([
           'target_id' => $thumbnail->id(),
@@ -667,10 +659,10 @@ class OmniaController extends ControllerBase {
       );
     }
     else {
-      $this->logger->info('Unpublished video "@title" (Drupal id: @id)... States: 
-      active:@active 
-      isSSC:@isSSC 
-      validfrom_ssc:@validfrom_ssc 
+      $this->logger->info('Unpublished video "@title" (Drupal id: @id)... States:
+      active:@active
+      isSSC:@isSSC
+      validfrom_ssc:@validfrom_ssc
       validto_ssc:@validto_ssc ',
         [
           '@title' => $this->nexxVideoData['title'],

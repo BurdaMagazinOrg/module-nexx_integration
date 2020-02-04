@@ -3,7 +3,7 @@
 namespace Drupal\Tests\nexx_integration\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\field_ui\Tests\FieldUiTestTrait;
+use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
 use Drupal\Tests\nexx_integration\FunctionalJavascript\NexxTestTrait;
 
 /**
@@ -19,13 +19,18 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'taxonomy',
     'nexx_integration',
     'nexx_integration_test',
     'field_ui',
     'field',
   ];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Test the endpoint.
@@ -188,7 +193,7 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
 
     $videoEntity = $this->loadVideoEntity($videoData->value);
     $this->assertNull($videoEntity, "Video id $id should be deleted.");
-    $this->assertEquals($count - 1, $this->countVideos(), "Counting all videos 
+    $this->assertEquals($count - 1, $this->countVideos(), "Counting all videos
     after deletion. Video id $id should be deleted.");
   }
 
@@ -197,8 +202,8 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
    */
   public function testCronExpiration() {
     $id = 9;
-    $pastDate = REQUEST_TIME - 10000;
-    $futureDate = REQUEST_TIME + 10000;
+    $pastDate = \Drupal::time()->getRequestTime() - 10000;
+    $futureDate = \Drupal::time()->getRequestTime() + 10000;
     $videoFieldName = $this->videoManager->videoFieldName();
 
     // First create a new entity that should be created as an active entity
@@ -256,7 +261,7 @@ class NexxIntegrationVideoTest extends BrowserTestBase {
 
     $videoEntity = $this->loadVideoEntity($videoData->value);
     $this->assertNull($videoEntity, "Video id $id should be deleted.");
-    $this->assertEquals($count - 1, $this->countVideos(), "Counting all videos 
+    $this->assertEquals($count - 1, $this->countVideos(), "Counting all videos
     after deletion. Video id $id should be deleted.");
   }
 

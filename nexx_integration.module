@@ -267,8 +267,8 @@ function nexx_integration_cron() {
   // Check videos, that could be activated.
   /** @var \Drupal\Core\Entity\Query\QueryInterface $ids */
   $ids = $storage->getQuery()
-    ->condition($video_field . '.validfrom_ssc', REQUEST_TIME, '<=')
-    ->condition($video_field . '.validto_ssc', REQUEST_TIME, '>')
+    ->condition($video_field . '.validfrom_ssc', \Drupal::time()->getRequestTime(), '<=')
+    ->condition($video_field . '.validto_ssc', \Drupal::time()->getRequestTime(), '>')
     ->condition("status", FALSE)
     ->execute();
 
@@ -285,7 +285,7 @@ function nexx_integration_cron() {
   /** @var \Drupal\Core\Entity\Query\QueryInterface $ids */
   $ids = $storage->getQuery()
     ->condition($video_field . '.validto_ssc', 0, '<>')
-    ->condition($video_field . '.validto_ssc', REQUEST_TIME, '<=')
+    ->condition($video_field . '.validto_ssc', \Drupal::time()->getRequestTime(), '<=')
     ->condition("status", TRUE)
     ->execute();
 
