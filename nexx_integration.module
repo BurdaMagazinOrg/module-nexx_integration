@@ -269,11 +269,12 @@ function nexx_integration_cron() {
   $ids = $storage->getQuery()
     ->condition($video_field . '.validfrom_ssc', \Drupal::time()->getRequestTime(), '<=')
     ->condition($video_field . '.validto_ssc', \Drupal::time()->getRequestTime(), '>')
-    ->condition("status", FALSE)
+    ->condition("status", 0)
     ->execute();
 
   foreach ($storage->loadMultiple($ids) as $video) {
-    $video->set("status", TRUE);
+    /** @var \Drupal\media\MediaInterface $video */
+    $video->setPublished();
     $video->save();
     $logger->info("Published nexx video \"@videoname\" (id: @id)", [
       '@videoname' => $video->label(),
@@ -286,12 +287,12 @@ function nexx_integration_cron() {
   $ids = $storage->getQuery()
     ->condition($video_field . '.validto_ssc', 0, '<>')
     ->condition($video_field . '.validto_ssc', \Drupal::time()->getRequestTime(), '<=')
-    ->condition("status", TRUE)
+    ->condition("status", 1)
     ->execute();
 
   foreach ($storage->loadMultiple($ids) as $video) {
     /** @var \Drupal\media\MediaInterface $video */
-    $video->set("status", FALSE);
+    $video->setUnpublished();
     $video->save();
     $logger->info("Unpublished nexx video \"@videoname\" (id: @id)", [
       '@videoname' => $video->label(),

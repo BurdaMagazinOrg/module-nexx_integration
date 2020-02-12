@@ -3,3 +3,5 @@ nexx_api_url: 'https://api.nexx.cloud/hooks/thunder.omnia'
 nexx_api_authkey: ''
 omnia_id: 0
 notification_access_key: ''
+api_secret: ''
+bigger_thumbnail: false

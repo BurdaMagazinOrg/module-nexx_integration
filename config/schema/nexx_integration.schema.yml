@@ -17,6 +17,12 @@ nexx_integration.settings:
     notification_access_key:
       type: string
       label:  'NEXX notification access key.'
+    api_secret:
+      type: string
+      label:  'NEXX notification API secret.'
+    bigger_thumbnail:
+      type: boolean
+      label: 'Allow bigger thumbnail'
 
 media.source.nexx_video:
   type: media.source.field_aware

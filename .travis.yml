@@ -12,7 +12,7 @@ cache:
     - "$HOME/.npm"
 
 php:
-  - 7.2
+  - 7.3
 
 branches:
   only:
@@ -22,8 +22,18 @@ env:
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 
+matrix:
+  include:
+    - env: DRUPAL_TESTING_DRUPAL_VERSION=~8.8.0
+      php: 7.2
+    - env: DRUPAL_TESTING_DRUPAL_VERSION=~8.8.0
+
 before_install:
-  - composer global require thunder/travis
+  - composer global require thunder/drupal-testing
+
+before_script:
+  - phpenv config-rm xdebug.ini
+
 script:
   - test-drupal-project
 
