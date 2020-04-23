@@ -28,9 +28,6 @@ media.source.nexx_video:
   type: media.source.field_aware
   label: 'Nexx video configuration'
   mapping:
-    source_field:
-      type: string
-      label: 'Field with embed code/URL'
     channel_field:
       type: string
       label: 'Channel'
@@ -40,6 +37,12 @@ media.source.nexx_video:
     teaser_image_field:
       type: string
       label: 'Teaser image'
+    description_field:
+      type: string
+      label: 'Description field mapping'
+    tag_field:
+      type: string
+      label: 'Actor taxonomy field mapping'
 
 field.value.nexx_video_data:
   type: mapping

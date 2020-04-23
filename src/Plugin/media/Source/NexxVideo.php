@@ -209,6 +209,19 @@ class NexxVideo extends MediaSourceBase {
   /**
    * {@inheritdoc}
    */
+  public function defaultConfiguration() {
+    return [
+      'description_field' => '',
+      'channel_field' => '',
+      'tag_field' => '',
+      'teaser_image_field' => '',
+      'actor_field' => '',
+    ] + parent::defaultConfiguration();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     /** @var \Drupal\media\MediaTypeInterface $type */
     $type = $form_state->getFormObject()->getEntity();
