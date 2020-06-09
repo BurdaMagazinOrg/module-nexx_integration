@@ -2,7 +2,7 @@ name: Nexx video integration
 type: module
 description: 'Integration of nexxOMNIA and nexxPLAY'
 package: Field types
-core_version_requirement: ^8.7.7
+core_version_requirement: ^8.8 || ^9
 configure: nexx_integration.admin_settings
 
 dependencies:

@@ -16,6 +16,11 @@ class NexxIntegrationJavascriptTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   public static $modules = [
     'taxonomy',
     'nexx_integration',
